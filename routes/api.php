@@ -1,8 +1,10 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth;
+use App\Http\Controllers\Api\V1\Auth\Users\UserController;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +17,17 @@ use App\Http\Controllers\Api\V1\Auth;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::post('auth/register', Auth\RegisterController::class);
 Route::post('auth/login', Auth\LoginController::class);
+
+Route::resource('auth/users', UserController::class)->only([
+    'show', 'update'
+]);
+
+// Route::get('auth/users/{user}', function (User $user) {
+//     return new UserResource($user);
+// });
