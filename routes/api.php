@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth;
 use App\Http\Controllers\Api\V1\Auth\Users\UserController;
+use App\Http\Controllers\ParkingContoller;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\ZoneController;
 use App\Http\Resources\UserResource;
@@ -23,13 +24,21 @@ Route::prefix('auth')->group(function () {
     Route::post('/register', Auth\RegisterController::class);
     Route::post('/login', Auth\LoginController::class);
     
-    //for the user view and update profile
-    Route::resource('/users', UserController::class)->only(['show', 'update']);
-    Route::post('/users/{user}/password', [UserController::class,'changePassword']);
+    Route::middleware(['auth:sanctum'])->group(function () {
     
-    //for the vehicles
-    Route::apiResource('/vehicles',VehicleController::class);
-    
-    //for Zones
-    Route::get('/zones',ZoneController::class);
+        //for the user view and update profile
+        Route::resource('/users', UserController::class)->only(['show', 'update']);
+        Route::post('/users/{user}/password', [UserController::class,'changePassword']);
+        
+        //for the vehicles
+        Route::apiResource('/vehicles',VehicleController::class);
+        
+        //for Zones
+        Route::get('/zones',ZoneController::class);
+
+        //parkings
+        Route::get('/parkings/{parking}',[ParkingContoller::class,'show']);
+        Route::post('/parkings/start',[ParkingContoller::class,'store']);
+        Route::post('/parkings/{parking}/stop',[ParkingContoller::class,'update']);
+    });
 });

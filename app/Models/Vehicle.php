@@ -12,4 +12,10 @@ class Vehicle extends Model
     use SoftDeletes;
  
     protected $fillable = ['user_id', 'plate_number'];
+
+    public function parking ()
+    {
+        return $this->belongsTo(Parking::class);
+    }
+
 }
