@@ -21,12 +21,22 @@ class VehicleController extends Controller
         $vehicles = $user->vehicles;
         return VehicleResource::collection($vehicles);
     }
+    
+    /**
+     * Display the specified resource.
+     */
+    public function show(Vehicle $vehicle)
+    {
+        $this->authorize('view', $vehicle);
+        return new VehicleResource($vehicle);
+    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
+        //$this->authorize('update', $vehicle);
         $request->validate([
             'plate_number' => ['required', 'string', 'max:255'],
             'user' => ['integer'],
@@ -43,19 +53,13 @@ class VehicleController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Vehicle $vehicle)
-    {
-        return new VehicleResource($vehicle);
-    }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Vehicle $vehicle)
     {
+        $this->authorize('update', $vehicle);
         $vehicleinfo = $request->validate([
             'plate_number' => ['required', 'string', 'max:255'],
         ]);
@@ -69,6 +73,7 @@ class VehicleController extends Controller
      */
     public function destroy($vehicle)
     {
+        $this->authorize('delete', $vehicle);
         $vehicle = Vehicle::find($vehicle);
         if($vehicle == null){
             return response()->json(['your vehicle is not exist!']);    

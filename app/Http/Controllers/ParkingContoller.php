@@ -10,12 +10,13 @@ class ParkingContoller extends Controller
 {
     public function show (Parking $parking)
     {
+        $this->authorize('view', $parking);
         return new ParkingResource($parking);
     }
 
     public function store (Request $request)
     {
-
+        $this->authorize('create');
         $validationArray = [
             'user_id'=> ['integer'],
             'vehicle_id'=> ['integer'],
@@ -30,15 +31,16 @@ class ParkingContoller extends Controller
             'zone_id' => $request->zone_id,
             'start_time' => now(),
         ]);
-        
+        $parking = Parking::find($parking)->with('zone','vehicle');
         return new ParkingResource($parking);
     }
 
     public function update (Parking $parking)
     {
+        $this->authorize('update', $parking);
         $validationArray = [
             'stop_time'=> now(),
-            'total_price'=> $this->getPrice($parking->start_time,now(),$parking),
+            'total_price'=> $this->getPrice($parking->start_time, now(), $parking),
         ];
         
         $parking->update($validationArray);
@@ -46,6 +48,7 @@ class ParkingContoller extends Controller
         return new ParkingResource($parking);
     }
 
+    //helper function
     protected function getPrice ($startdate,$enddate, Parking $parking)
     {
         $t1 = strtotime($enddate);

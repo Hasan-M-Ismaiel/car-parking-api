@@ -24,5 +24,9 @@ class AppServiceProvider extends ServiceProvider
             $rule = Password::min(8);
             return $this->app->isProduction() ? $rule->mixedCase()->uncompromised():$rule;
         });
+
+        // Gate::define('create-vehicle', function (User $user, Post $post) {
+        //     return $user->id === $post->user_id;
+        // });
     }
 }
