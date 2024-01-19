@@ -19,6 +19,8 @@ class UserController extends Controller
     {
         $user = User::find($user);
         return new UserResource($user[0]); 
+        //as alternative you can add just this: 
+        //return response()->json($request->user()->only('name', 'email'));
     }
 
     /**
@@ -33,7 +35,9 @@ class UserController extends Controller
 
     public function changePassword(UserRequestChangePassword $request, User $user)
     {
+        
         $userPassword['password'] = $request->validated()['newPassword'];
+        //[todo] befor update - here you have to check if the given password is match with the one in the database table for this user 
         $user->update($userPassword);
 
         $device = substr($request->userAgent() ?? '', 0, 255);
